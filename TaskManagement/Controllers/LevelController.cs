@@ -11,65 +11,44 @@ namespace TaskManagement.Controllers
     [Route("api/v1/level")]
     public class LevelController : ControllerBase
     {
-        private readonly IEnumerable<LevelAPI> levels = new List<LevelAPI>
+        private IEnumerable<LevelAPI> _levels = new List<LevelAPI>
         {
             new LevelAPI
             {
                 id = 1,
                 number = 1,
-                points = 0,
-                types = new List<string>
-                {
-                   "wizzard"
-                }
+                points = 0
             },
             new LevelAPI
             {
                 id = 2,
                 number = 2,
-                points = 25,
-                types = new List<string>
-                {
-                    "superman"
-                }
+                points = 25
             },
             new LevelAPI
             {
                 id = 3,
                 number = 3,
-                points = 50,
-                types = new List<string>
-                {
-                    "hulk"
-                }
+                points = 50
             }
 
         };
-        /*
+        
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<LevelAPI>), 200)]
         public ActionResult<IEnumerable<LevelAPI>> GetLevels()
         {
-            return Ok(levels);
+            return Ok(_levels);
            
         }
-        */
         
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<LevelAPI>), 200)]
-        public ActionResult<IEnumerable<LevelAPI>> GetLevelsByType(string type)
-        {
-            var levelsByType = levels.Where(level =>  string.IsNullOrEmpty(type) || level.types.Contains(type));
-            return Ok(levelsByType);
-           
-        }
         
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(LevelAPI), 200)]
         [ProducesResponseType(204)]
         public ActionResult<LevelAPI> GetLevel(int id)
         {
-            var specificLevel = levels.SingleOrDefault(level => level.id == id);
+            var specificLevel = _levels.SingleOrDefault(level => level.id == id);
             if (specificLevel == null)
             {
                 return NoContent();
@@ -81,9 +60,9 @@ namespace TaskManagement.Controllers
         [ProducesResponseType(typeof(LevelAPI), 201)]
         public ActionResult<LevelAPI> AddLevel(LevelAPI levelToAdd)
         {
-            levelToAdd.id = levels.Max(level => level.id) + 1;
-            levelToAdd.number = levels.Max(level => level.number) + 1;
-            levelToAdd.points = levels.Max(level => level.points) + 25;
+            levelToAdd.id = _levels.Max(level => level.id) + 1;
+            levelToAdd.number = _levels.Max(level => level.number) + 1;
+            levelToAdd.points = _levels.Max(level => level.points) + 25;
             return Created("", levelToAdd);
         }
         
@@ -92,7 +71,7 @@ namespace TaskManagement.Controllers
         [ProducesResponseType(204)]
         public ActionResult<LevelAPI> UpdateLevel(int id, LevelAPI levelToUpdate)
         {
-            var searchedLevel = levels.SingleOrDefault(level => level.id == id);
+            var searchedLevel = _levels.SingleOrDefault(level => level.id == id);
             if (searchedLevel != null)
             {
                 searchedLevel.number = levelToUpdate.number;
@@ -107,7 +86,7 @@ namespace TaskManagement.Controllers
         [ProducesResponseType(typeof(IEnumerable<LevelAPI>), 200)]
         public ActionResult DeleteLevel(int id)
         {
-            var levelsAfterDelete = levels.Where(level => level.id != id).ToList();
+            var levelsAfterDelete = _levels.Where(level => level.id != id).ToList();
             return Ok(levelsAfterDelete);
         }
     }

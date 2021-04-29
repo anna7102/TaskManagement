@@ -10,8 +10,5 @@ namespace TaskManagement.Model
         public int number { get; set; }
         
         public int points { get; set; }
-        
-        public IEnumerable<string> types { get; set; }
- 
     }
 }
